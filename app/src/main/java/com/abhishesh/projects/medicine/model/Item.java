@@ -6,15 +6,16 @@ import android.util.Log;
  * Created by Abhishesh on 15/10/15.
  */
 public class Item {
-    /* <id>199</id>
-    <label>Acnil 60 ml Facewash(Merck Ltd)</label>
-    <brand>Acnil</brand>
-    <type>OTC</type>
-    <drugspacksize>60 ml Facewash</drugspacksize>
-    <manufacturer>Merck Ltd</manufacturer>
-    <mrp>120.00</mrp>
-    <packform>Tube</packform>
-    <pform>Facewash</pform> */
+
+    private String id;
+    private String label;
+    private String brand;
+    private String type;
+    private String drugsPackSize;
+    private String manufacturer;
+    private float mrp;
+    private String packForm;
+    private String pForm;
 
     public String getId() {
         return id;
@@ -88,15 +89,6 @@ public class Item {
         this.pForm = pForm;
     }
 
-    private String id;
-    private String label;
-    private String brand;
-    private String type;
-    private String drugsPackSize;
-    private String manufacturer;
-    private float mrp;
-    private String packForm;
-    private String pForm;
 
     public Item(String id, String label, String brand, String type, String drugsPackSize,
                          String manufacturer, float mrp, String packForm, String pForm) {
@@ -109,9 +101,9 @@ public class Item {
         this.mrp = mrp;
         this.packForm = packForm;
         this.pForm = pForm;
-        Log.d("ABHISHESH","this: " + this);
     }
 
+    public Item(){}
     @Override
     public String toString() {
         return "[" + id + " " + label + " " + brand + " " + type + drugsPackSize + " "

@@ -5,12 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import com.abhishesh.projects.medicine.R;
-import com.abhishesh.projects.medicine.adapter.MedicinePagerAdapter;
 
 /**
  * Created by Abhishesh on 15/10/15.
@@ -27,15 +26,15 @@ public class DetailActivity extends FragmentActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_pager_layout);
-
-        mAdapter = new ItemPagerAdapter(getSupportFragmentManager(), 10);
+        int count = getSharedPreferences("item_pref",MODE_PRIVATE).getInt("count",0);
+        mAdapter = new ItemPagerAdapter(getSupportFragmentManager(), count);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOffscreenPageLimit(2);
 
-        final int extraCurrentItem = getIntent().getIntExtra(EXTRA_ITEM, -1);
-        if (extraCurrentItem != -1) {
-            mPager.setCurrentItem(extraCurrentItem);
+        id = getIntent().getIntExtra(EXTRA_ITEM, -1);
+        if (id != -1) {
+            mPager.setCurrentItem((int)id);
         }
     }
 
@@ -59,7 +58,7 @@ public class DetailActivity extends FragmentActivity implements View.OnClickList
 
         @Override
         public Fragment getItem(int position) {
-            return DetailFragment.newInstance(id);
+            return DetailFragment.newInstance(position);
         }
     }
 }

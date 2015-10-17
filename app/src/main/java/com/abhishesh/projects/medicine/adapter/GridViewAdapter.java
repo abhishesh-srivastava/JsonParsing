@@ -17,6 +17,10 @@ import java.util.List;
 /**
  * Created by Abhishesh on 15/10/15.
  */
+
+/**
+ * Adapter for displaying in grid view
+ */
 public class GridViewAdapter extends BaseAdapter{
 
     private List<Item> mList;
@@ -53,21 +57,16 @@ public class GridViewAdapter extends BaseAdapter{
         if(convertView == null) {
             convertView = mInflater.inflate(R.layout.grid_row,null);
             ViewHolder viewHolder = new ViewHolder();
-            viewHolder.sLabel = (TextView) convertView.findViewById(R.id.label);/*
-            viewHolder.sBrand = (TextView) convertView.findViewById(R.id.item_brand);
-            viewHolder.sMrp = (TextView) convertView.findViewById(R.id.item_mrp);*/
+            viewHolder.sLabel = (TextView) convertView.findViewById(R.id.label);
             convertView.setTag(viewHolder);
         }
         ViewHolder holder = (ViewHolder) convertView.getTag();
-        holder.sLabel.setText(mList.get(position).getLabel());/*
-        holder.sBrand.setText(mList.get(position).getBrand());
-        holder.sMrp.setText(mList.get(position).getMrp() + "Rs ");*/
+        holder.sLabel.setText(mList.get(position).getLabel());
         return convertView;
     }
 
+    //Avoid frequent findViewById, and hence improves scrolling and gives better user experience
     private static class ViewHolder {
         private TextView sLabel;
-        private TextView sBrand;
-        private TextView sMrp;
     }
 }

@@ -3,12 +3,16 @@ package com.abhishesh.projects.medicine.ui;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.abhishesh.projects.medicine.R;
+import com.abhishesh.projects.medicine.db.DatabaseController;
+import com.abhishesh.projects.medicine.model.Item;
 
 /**
  * Created by Abhishesh on 15/10/15.
@@ -16,12 +20,21 @@ import com.abhishesh.projects.medicine.R;
 public class DetailFragment extends Fragment {
 
     private static final String ITEM_DATA_EXTRA = "extra_item_data";
-    private long mId = -1;
-    public static DetailFragment newInstance(long id) {
-        final DetailFragment f = new DetailFragment();
+    private int mId = -1;
+    private TextView mTxtId;
+    private TextView label;
+    private TextView brand;
+    private TextView type;
+    private TextView drugsPackSize;
+    private TextView manufacturer;
+    private TextView mrp;
+    private TextView packForm;
+    private TextView pForm;
+    public static DetailFragment newInstance(int id) {
 
+        final DetailFragment f = new DetailFragment();
         final Bundle args = new Bundle();
-        args.putLong(ITEM_DATA_EXTRA, id);
+        args.putInt(ITEM_DATA_EXTRA, id);
         f.setArguments(args);
         return f;
     }
@@ -40,6 +53,28 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.detail_fragment_layout, container, false);
+        label = (TextView) v.findViewById(R.id.detail_label);
+        brand = (TextView) v.findViewById(R.id.detail_brand);
+        type = (TextView) v.findViewById(R.id.detail_type);
+        drugsPackSize = (TextView) v.findViewById(R.id.detail_size);
+        mrp = (TextView) v.findViewById(R.id.detail_mrp);
+        packForm = (TextView) v.findViewById(R.id.detail_pack_form);
+        pForm = (TextView) v.findViewById(R.id.detail_p_form);
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Item item = DatabaseController.getInstance(getActivity()).getItem(mId+1);
+        if(item != null) {
+            label.setText("LABEL : " + item.getLabel());
+            brand.setText("BRAND : " + item.getBrand());
+            type.setText("TYPE : " + item.getType());
+            drugsPackSize.setText("SIZE : " + item.getDrugsPackSize());
+            mrp.setText("MRP Rs" + item.getMrp());
+            packForm.setText("PACKFORM : " + item.getPackForm());
+            pForm.setText("PFORM : " + item.getpForm());
+        }
     }
 }

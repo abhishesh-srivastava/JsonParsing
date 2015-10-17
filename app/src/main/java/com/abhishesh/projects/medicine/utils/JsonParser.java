@@ -12,6 +12,10 @@ import java.util.List;
 /**
  * Created by Abhishesh on 17/10/15.
  */
+
+/**
+ * Class used for parsing response from server(json format data)
+ */
 public class JsonParser {
 
     public static List<Item> parse(String data) {
@@ -21,7 +25,6 @@ public class JsonParser {
             JSONArray array = jsonObject.getJSONArray("data");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject itemObject = array.getJSONObject(i);
-                String temp = null;
                 String id = null;
                 String label = null;
                 String brand = null;

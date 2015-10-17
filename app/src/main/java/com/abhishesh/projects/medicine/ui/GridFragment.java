@@ -1,9 +1,9 @@
 package com.abhishesh.projects.medicine.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,54 +13,42 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.abhishesh.projects.medicine.adapter.GridViewAdapter;
+import com.abhishesh.projects.medicine.db.DatabaseController;
 import com.abhishesh.projects.medicine.model.Item;
 import com.abhishesh.projects.medicine.utils.JsonParser;
 import com.abhishesh.projects.medicine.utils.LogUtils;
 import com.abhishesh.projects.medicine.R;
 import com.abhishesh.projects.medicine.utils.NetworkRequestHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Abhishesh on 15/10/15.
  */
-public class GridFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class GridFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     public static final String TAG = LogUtils.makeLogTag(GridFragment.class);
-
-    private int mGridSize;
-    private int mGridSpacing;
     private GridViewAdapter mAdapter;
+    private final String SHARED_PREF_NAME = "item_pref";
+    private final String API_URL = "http://api.staging.pharmeasy.in/v1/reminder-medicine?brand=&page=1";
 
-    public GridFragment(){}
+    public GridFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mGridSize = getResources().getDimensionPixelSize(R.dimen.grid_item_size);
-        mGridSpacing = getResources().getDimensionPixelSize(R.dimen.grid_item_margin);
-//        try {
-        StrictMode.ThreadPolicy.Builder builder = new StrictMode.ThreadPolicy.Builder().permitAll();
-        StrictMode.setThreadPolicy(builder.build());
-            String response = NetworkRequestHandler.getRequest("http://api.staging.pharmeasy.in/v1/reminder-medicine?brand=&page=1");
-            /* InputStream inputStream = getActivity().getAssets().open("reminder-medicine.xml");
-            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder total = new StringBuilder();
-            String line;
-            while ((line = r.readLine()) != null) {
-                total.append(line);
-            }
-            Log.d("ABHISHESH","input: " + total.toString()); */
-            List<Item> itemList = JsonParser.parse(response);
-            mAdapter = new GridViewAdapter(getActivity(),itemList);
-            Log.d("ABHISHESH","item: " + itemList);
-        /*} catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        boolean isDataDownloaded = getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getBoolean("loaded", false);
+        DownloadItemDataTask task = new DownloadItemDataTask(getActivity(), isDataDownloaded);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        mAdapter = new GridViewAdapter(getActivity(), new ArrayList<Item>());
+
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.grid_fragment_layout, container, false);
@@ -73,7 +61,48 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent i = new Intent(getActivity(), DetailActivity.class);
-        i.putExtra(DetailActivity.EXTRA_ITEM, (int) id);
+        i.putExtra(DetailActivity.EXTRA_ITEM, (int) (position));
         startActivity(i);
+    }
+
+    private class DownloadItemDataTask extends AsyncTask<Void, Integer, List<Item>> {
+
+        private Context mContext;
+        private boolean isDataAvaiable;
+
+        DownloadItemDataTask(Context context, boolean flag) {
+            mContext = context;
+            isDataAvaiable = flag;
+        }
+
+        @Override
+        protected List<Item> doInBackground(Void... params) {
+            List<Item> itemList = null;
+
+            if (isDataAvaiable) {
+                itemList = DatabaseController.getInstance(mContext).getAllItems();
+            } else {
+                String response = NetworkRequestHandler.getRequest(API_URL);
+                itemList = JsonParser.parse(response);
+                for (Item item : itemList) {
+                    DatabaseController mController = DatabaseController.getInstance(mContext);
+                    long ll = mController.insertItem(item);
+                }
+            }
+            return itemList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Item> items) {
+            super.onPostExecute(items);
+            if (items != null && items.size() > 0) {
+                mAdapter.setList(items);
+                mAdapter.notifyDataSetChanged();
+                if (!isDataAvaiable) {
+                    getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).edit().putBoolean("loaded", true).commit();
+                    getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).edit().putInt("count", items.size()).commit();
+                }
+            }
+        }
     }
 }

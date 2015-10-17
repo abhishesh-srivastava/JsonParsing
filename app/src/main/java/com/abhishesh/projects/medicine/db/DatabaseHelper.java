@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static synchronized DatabaseHelper getInstance(Context context)
     {
         if (sInstance == null)
-            sInstance = new DatabaseHelper(context);
+            sInstance = new DatabaseHelper(context.getApplicationContext());
         return sInstance;
     }
 
@@ -33,10 +33,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String sql;
         // create table
         sql = "CREATE TABLE IF NOT EXISTS " + DatabaseContracts.ItemEntry.TABLE_NAME + " (" +
-                DatabaseContracts.ItemEntry.COLUMN_NAME_ITEM_ID + " INTEGER PRIMARY KEY DEFAULT 0, " +
+                DatabaseContracts.ItemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0 , " +
+                DatabaseContracts.ItemEntry.COLUMN_NAME_ITEM_ID + " TEXT NOT NULL, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_BRAND + " TEXT, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_DRUGS_PACK_SIZE + " TEXT, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_LABEL + " TEXT, " +
+                DatabaseContracts.ItemEntry.COLUMN_NAME_TYPE + " TEXT, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_MANUFACTURER + " TEXT, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_MRP + " REAL, " +
                 DatabaseContracts.ItemEntry.COLUMN_NAME_PACK_FORM + " TEXT, " +

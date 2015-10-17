@@ -20,19 +20,18 @@ public class NetworkRequestHandler {
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             // optional default is GET
             con.setRequestMethod("GET");
-            //add request header
             int responseCode = con.getResponseCode();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder builder = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                builder.append(inputLine);
+            if(responseCode == 200) {
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuilder builder = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    builder.append(inputLine);
+                }
+                response = builder.toString();
+                in.close();
             }
-            response = builder.toString();
-            Log.d("ABHISHESH","res: " + response);
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
