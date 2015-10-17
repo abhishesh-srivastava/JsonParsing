@@ -23,47 +23,7 @@ public class SplashActivity extends Activity {
 
     private ProgressBar progressBar;
     private Handler mHandler = new Handler();
-    private String DATABASE_PATH ="/data/com.abhishesh.projects.medicine/databases";
-    public void copy() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
 
-            if (sd.canWrite()) {
-                String currentDBPath = DATABASE_PATH;
-                String backupDBPath = "BiaApp/";
-                File currentDB = new File(data,currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-                copyDirectoryOneLocationToAnotherLocation(currentDB,backupDB);
-            }
-        } catch (Exception e) {
-        }
-    }
-    public static void copyDirectoryOneLocationToAnotherLocation(File sourceLocation, File targetLocation)
-            throws IOException {
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                targetLocation.mkdir();
-            }
-            String[] children = sourceLocation.list();
-            for (int i = 0; i < sourceLocation.listFiles().length; i++) {
-
-                copyDirectoryOneLocationToAnotherLocation(new File(sourceLocation, children[i]),
-                        new File(targetLocation, children[i]));
-            }
-        } else {
-            InputStream in = new FileInputStream(sourceLocation);
-            OutputStream out = new FileOutputStream(targetLocation);
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        }
-    }
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +31,6 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.splash_activity_layout);
         // Declare a progressbar that appears in the middle of the splash screen.
         progressBar = (ProgressBar) findViewById(R.id.progress);
-        copy();
     }
 
     @Override
