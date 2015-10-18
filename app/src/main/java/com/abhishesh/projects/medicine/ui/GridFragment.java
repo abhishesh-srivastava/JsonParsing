@@ -15,6 +15,7 @@ import android.widget.GridView;
 import com.abhishesh.projects.medicine.adapter.GridViewAdapter;
 import com.abhishesh.projects.medicine.db.DatabaseController;
 import com.abhishesh.projects.medicine.model.Item;
+import com.abhishesh.projects.medicine.utils.GlobalConstants;
 import com.abhishesh.projects.medicine.utils.JsonParser;
 import com.abhishesh.projects.medicine.utils.LogUtils;
 import com.abhishesh.projects.medicine.R;
@@ -30,8 +31,6 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
 
     public static final String TAG = LogUtils.makeLogTag(GridFragment.class);
     private GridViewAdapter mAdapter;
-    private final String SHARED_PREF_NAME = "item_pref";
-    private final String API_URL = "http://api.staging.pharmeasy.in/v1/reminder-medicine?brand=&page=1";
 
     public GridFragment() {
     }
@@ -40,8 +39,8 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        boolean isDataDownloaded = getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
-                .getBoolean("loaded", false);
+        boolean isDataDownloaded = getActivity().getSharedPreferences(GlobalConstants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getBoolean(GlobalConstants.SHARED_PREF_FIELD_LOADED, false);
         DownloadItemDataTask task = new DownloadItemDataTask(getActivity(), isDataDownloaded);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -61,7 +60,7 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent i = new Intent(getActivity(), DetailActivity.class);
-        i.putExtra(DetailActivity.EXTRA_ITEM, (int) (position));
+        i.putExtra(DetailActivity.EXTRA_ITEM, position);
         startActivity(i);
     }
 
@@ -77,12 +76,12 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
 
         @Override
         protected List<Item> doInBackground(Void... params) {
-            List<Item> itemList = null;
+            List<Item> itemList;
 
             if (isDataAvaiable) {
                 itemList = DatabaseController.getInstance(mContext).getAllItems();
             } else {
-                String response = NetworkRequestHandler.getRequest(API_URL);
+                String response = NetworkRequestHandler.getRequest(GlobalConstants.API_URL);
                 itemList = JsonParser.parse(response);
                 for (Item item : itemList) {
                     DatabaseController mController = DatabaseController.getInstance(mContext);
@@ -99,8 +98,10 @@ public class GridFragment extends Fragment implements AdapterView.OnItemClickLis
                 mAdapter.setList(items);
                 mAdapter.notifyDataSetChanged();
                 if (!isDataAvaiable) {
-                    getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).edit().putBoolean("loaded", true).commit();
-                    getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).edit().putInt("count", items.size()).commit();
+                    getActivity().getSharedPreferences(GlobalConstants.SHARED_PREF_NAME,
+                            Context.MODE_PRIVATE).edit().putBoolean(GlobalConstants.SHARED_PREF_FIELD_LOADED, true).commit();
+                    getActivity().getSharedPreferences(GlobalConstants.SHARED_PREF_NAME,
+                            Context.MODE_PRIVATE).edit().putInt(GlobalConstants.SHARED_PREF_FIELD_COUNT, items.size()).commit();
                 }
             }
         }

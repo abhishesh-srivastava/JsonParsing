@@ -9,7 +9,7 @@
         android:background="@color/black_background" />
 
     <ImageView
-        android:id="@+id/full_image_pager"
+        android:id="@+id/pager_icon"
         android:layout_width="match_parent"
         android:src="@drawable/icon"
         android:layout_height="wrap_content" />
@@ -18,7 +18,7 @@
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/full_image_pager"
+        android:layout_below="@id/pager_icon"
         android:background="#96000000"
         android:orientation="vertical"
         android:padding="20dp">

@@ -1,5 +1,6 @@
 package com.abhishesh.projects.medicine.utils;
 
+import com.abhishesh.projects.medicine.db.DatabaseContracts;
 import com.abhishesh.projects.medicine.model.Item;
 
 import org.json.JSONArray;
@@ -34,18 +35,15 @@ public class JsonParser {
                 float mrp = 0.0f;
                 String packForm = null;
                 String pForm = null;
-                /*{"id":"000010","label":"1 2 3 50MG TAB","brand":"1 2 3 50MG TAB","type":"MEDICINE",
-                "drugspacksize":"STRIPS","manufacturer":"AGLOWMED LIMITED","mrp":"0.00",
-                "packform":"STRIPS","pform":"STRIPS"}*/
-                id = itemObject.getString("id");
-                label = itemObject.getString("label");
-                brand = itemObject.getString("brand");
-                type = itemObject.getString("type");
-                drugsPackSize = itemObject.getString("drugspacksize");
-                manufacturer = itemObject.getString("manufacturer");
-                mrp = Float.valueOf(itemObject.getString("mrp"));
-                packForm = itemObject.getString("packform");
-                pForm = itemObject.getString("pform");
+                id = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_ITEM_ID);
+                label = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_LABEL);
+                brand = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_LABEL);
+                type = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_TYPE);
+                drugsPackSize = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_DRUGS_PACK_SIZE);
+                manufacturer = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_MANUFACTURER);
+                mrp = Float.valueOf(itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_MRP));
+                packForm = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_PACK_FORM);
+                pForm = itemObject.getString(DatabaseContracts.ItemEntry.COLUMN_NAME_P_FORM);
                 itemList.add(new Item(id, label, brand, type, drugsPackSize, manufacturer, mrp, packForm, pForm));
             }
         } catch (JSONException e) {

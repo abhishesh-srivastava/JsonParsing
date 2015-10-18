@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.abhishesh.projects.medicine.R;
+import com.abhishesh.projects.medicine.utils.GlobalConstants;
 
 /**
  * Created by Abhishesh on 15/10/15.
@@ -26,7 +27,7 @@ public class DetailActivity extends FragmentActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_pager_layout);
-        int count = getSharedPreferences("item_pref",MODE_PRIVATE).getInt("count",0);
+        int count = getSharedPreferences(GlobalConstants.SHARED_PREF_NAME,MODE_PRIVATE).getInt(GlobalConstants.SHARED_PREF_FIELD_COUNT, 0);
         mAdapter = new ItemPagerAdapter(getSupportFragmentManager(), count);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);

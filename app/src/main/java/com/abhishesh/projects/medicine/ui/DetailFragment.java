@@ -1,5 +1,6 @@
 package com.abhishesh.projects.medicine.ui;
 
+import android.media.Image;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -8,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abhishesh.projects.medicine.R;
 import com.abhishesh.projects.medicine.db.DatabaseController;
 import com.abhishesh.projects.medicine.model.Item;
+import com.abhishesh.projects.medicine.utils.Utils;
 
 /**
  * Created by Abhishesh on 15/10/15.
@@ -21,7 +24,6 @@ public class DetailFragment extends Fragment {
 
     private static final String ITEM_DATA_EXTRA = "extra_item_data";
     private int mId = -1;
-    private TextView mTxtId;
     private TextView label;
     private TextView brand;
     private TextView type;
@@ -30,6 +32,7 @@ public class DetailFragment extends Fragment {
     private TextView mrp;
     private TextView packForm;
     private TextView pForm;
+    private ImageView icon;
     public static DetailFragment newInstance(int id) {
 
         final DetailFragment f = new DetailFragment();
@@ -53,6 +56,8 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.detail_fragment_layout, container, false);
+        icon = (ImageView) v.findViewById(R.id.pager_icon);
+        icon.setImageResource(Utils.icons[mId % 5]);
         label = (TextView) v.findViewById(R.id.detail_label);
         brand = (TextView) v.findViewById(R.id.detail_brand);
         type = (TextView) v.findViewById(R.id.detail_type);
@@ -66,6 +71,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //items are stored from number 1, not 0 in db
         Item item = DatabaseController.getInstance(getActivity()).getItem(mId+1);
         if(item != null) {
             label.setText("LABEL : " + item.getLabel());

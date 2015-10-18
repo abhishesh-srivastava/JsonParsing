@@ -6,7 +6,6 @@ import android.util.Log;
  * Created by Abhishesh on 15/10/15.
  */
 public class Item {
-
     private String id;
     private String label;
     private String brand;

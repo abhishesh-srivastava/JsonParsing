@@ -12,7 +12,6 @@ import android.provider.BaseColumns;
 public final class DatabaseContracts {
 
     public DatabaseContracts() {}
-
     public static abstract class ItemEntry implements BaseColumns {
         public static final String TABLE_NAME = "items";
         public static final String COLUMN_NAME_ITEM_ID = "id";
