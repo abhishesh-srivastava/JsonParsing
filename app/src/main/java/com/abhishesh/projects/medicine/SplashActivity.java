@@ -25,7 +25,7 @@ import java.io.OutputStream;
  * Created by Abhishesh on 15/10/15.
  */
 public class SplashActivity extends Activity {
-
+	//Test
     private ProgressBar progressBar;
     private Handler mHandler = new Handler();
     private boolean isDataAvailable = false;
